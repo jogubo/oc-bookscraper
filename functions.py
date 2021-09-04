@@ -16,19 +16,7 @@ def product_scrap(url):
     price_et = product_info[2].string
     price_it = product_info[3].string
     stock = product_info[5].string
-    rating = str(soup.find("p", class_="star-rating"))
-    if ("One") in rating:
-        rating = "1/5"
-    elif ("Two") in rating:
-        rating = "2/5"
-    elif ("Three") in rating:
-        rating = "3/5"
-    elif ("Four") in rating:
-        rating = "4/5"
-    elif ("Five") in rating:
-        rating = "5/5"
-    else:
-        rating = None
+    rating = product_rating(str(soup.find("p", class_="star-rating")))
     product_list = [
             title.string,
             description.string,
@@ -41,3 +29,19 @@ def product_scrap(url):
             url
             ]
     return product_list
+
+
+def product_rating(rating):
+    if ("One") in rating:
+        rating = "1/5"
+    elif ("Two") in rating:
+        rating = "2/5"
+    elif ("Three") in rating:
+        rating = "3/5"
+    elif ("Four") in rating:
+        rating = "4/5"
+    elif ("Five") in rating:
+        rating = "5/5"
+    else:
+        rating = None
+    return rating
