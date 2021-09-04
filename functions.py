@@ -8,12 +8,8 @@ def product_scrap(url):
 
     title = soup.find("div", class_="product_main").find("h1")
 
-    stock = soup.find("p", class_="availability")
-
     description = soup.find("article", class_="product_page").find(
             "p", recursive=False)
-
-    upc = soup.find("td")
 
     img = soup.find("div", class_="thumbnail").find("img")
     img = img['src'].replace('../../', '')
@@ -22,10 +18,17 @@ def product_scrap(url):
     product_list = [
             url,
             title.string,
-            stock.string,
             description.string,
-            upc.string,
             img_url
             ]
+
+    product_info = soup.find("table", class_="table-striped").find_all("td")
+    i = 0
+    for tds in product_info:
+        if i <= 5 and i != 1 and i != 4:
+            product_list.append(product_info[i].string)
+            i += 1
+        else:
+            i += 1
 
     return product_list
