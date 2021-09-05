@@ -56,5 +56,10 @@ def list_categories(url):
     all = soup.find("ul", class_="nav").find("a")
     all = "https://books.toscrape.com/" + all['href']
     all = {"All": all.replace("index.html", "page-1.html")}
-    categories = soup.find("ul", class_="nav").find_all("ul")
-    return all
+    categories = soup.find("ul", class_="nav").find("li").find_all("a")
+    category_list, i, category = [all], 0, {}
+    for li in categories:
+        category = {"category": "url"}
+        category_list.append(category)
+        i += 1
+    return category_list
