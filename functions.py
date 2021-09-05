@@ -35,6 +35,7 @@ def product_scrap(url):
 
 
 def product_rating(rating):
+    """View rating"""
     if ("One") in rating:
         rating = "1/5"
     elif ("Two") in rating:
@@ -51,16 +52,18 @@ def product_rating(rating):
 
 
 def list_categories(url):
+    """Retrieves categories and url on the main page"""
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
     all = soup.find("ul", class_="nav").find("a")
     all = "https://books.toscrape.com/" + all['href']
     all = {"All": all.replace("index.html", "page-1.html")}
     categories = soup.find("ul", class_="nav").find("li").find_all("a")
-    category_list, i, category = [all], 0, {}
+    cat_list, i = [all], 0
     for li in categories:
-        title = categories[i].string.strip().replace("\n", "")
-        category = {title: "url"}
-        category_list.append(category)
+        cat = categories[i].string.strip().replace("\n", "")
+        link = "https://books.toscrape.com/" + categories[i]['href']
+        cat = {cat: link}
+        cat_list.append(cat)
         i += 1
-    return category_list
+    return cat_list
