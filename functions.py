@@ -59,7 +59,8 @@ def list_categories(url):
     categories = soup.find("ul", class_="nav").find("li").find_all("a")
     category_list, i, category = [all], 0, {}
     for li in categories:
-        category = {"category": "url"}
+        title = categories[i].string.strip().replace("\n", "")
+        category = {title: "url"}
         category_list.append(category)
         i += 1
     return category_list
