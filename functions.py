@@ -48,3 +48,13 @@ def product_rating(rating):
     else:
         rating = None
     return rating
+
+
+def list_categories(url):
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, "html.parser")
+    links = {}
+    all = soup.find("ul", class_="nav").find("a")
+    categories = soup.find("ul", class_="nav").find_all("ul")
+    links = {"All": all}
+    return links
