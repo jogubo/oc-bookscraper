@@ -1,4 +1,5 @@
 import requests
+import time
 from bs4 import BeautifulSoup
 
 main_url = "https://books.toscrape.com/"
@@ -14,7 +15,7 @@ def product_infos(url):
     description = soup.find("article", class_="product_page").find(
             "p", recursive=False)
     img = soup.find("div", class_="thumbnail").find("img")
-    img = img['src'].replace('../../', 'https://books.toscrape.com/')
+    img = img['src'].replace('../../', main_url)
     product_info = soup.find("table", class_="table-striped").find_all("td")
     upc = product_info[0].string
     price_et = product_info[2].string
@@ -81,3 +82,17 @@ def books_links(url):
         books.append(link)
         i += 1
     return books
+
+
+def pages(url, p):
+    """Increment the pages"""
+    url = url.replace("index.html", "page-" + str(p) + ".html")
+    request = requests.get(url)
+    if request.ok:
+        return url
+    else:
+        time.sleep(2)
+        if request.ok:
+            return url
+        else:
+            return None
