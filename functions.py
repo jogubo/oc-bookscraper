@@ -53,8 +53,8 @@ def product_rating(rating):
 def list_categories(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
-    links = {}
     all = soup.find("ul", class_="nav").find("a")
+    all = "https://books.toscrape.com/" + all['href']
+    all = {"All": all.replace("index.html", "page-1.html")}
     categories = soup.find("ul", class_="nav").find_all("ul")
-    links = {"All": all}
-    return links
+    return all
