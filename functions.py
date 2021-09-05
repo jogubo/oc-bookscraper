@@ -1,8 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
+main_url = "https://books.toscrape.com/"
 
-def product_scrap(url):
+
+def product_infos(url):
     """Scrap data from a product"""
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
@@ -56,14 +58,26 @@ def list_categories(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
     all = soup.find("ul", class_="nav").find("a")
-    all = "https://books.toscrape.com/" + all['href']
-    all = {"All": all.replace("index.html", "page-1.html")}
+    all = {"All": main_url + all['href']}
     categories = soup.find("ul", class_="nav").find("li").find_all("a")
     cat_list, i = [all], 0
     for li in categories:
         cat = categories[i].string.strip().replace("\n", "")
-        link = "https://books.toscrape.com/" + categories[i]['href']
+        link = main_url + categories[i]['href']
         cat = {cat: link}
         cat_list.append(cat)
         i += 1
     return cat_list
+
+
+def books_links(url):
+    """Retrieves books urls"""
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, "html.parser")
+    links = soup.find("ol", class_="row").find_all("a")
+    books, i = [], 0
+    for href in links:
+        link = main_url + links[i]['href']
+        books.append(link)
+        i += 1
+    return books
