@@ -54,9 +54,9 @@ def product_rating(rating):
     return rating
 
 
-def list_categories(url):
+def list_categories():
     """Retrieves categories and url on the main page"""
-    page = requests.get(url)
+    page = requests.get(main_url)
     soup = BeautifulSoup(page.content, "html.parser")
     all = soup.find("ul", class_="nav").find("a")
     all = {"All": main_url + all['href']}
@@ -69,6 +69,30 @@ def list_categories(url):
         cat_list.append(cat)
         i += 1
     return cat_list
+
+
+def select_cat():
+    """View and select category"""
+    while True:
+        cat_list = list_categories()
+        i = 0
+        for cat_nb in cat_list:
+            cat = cat_list[i]
+            for key in cat.keys():
+                if i < 10:
+                    print(" " + str(i) + " - " + key)
+                else:
+                    print(str(i) + " - " + key)
+            i += 1
+        select_cat = input("Entrez le numéro de la catégorie "
+                           "dont vous souhaitez recupérer les données : ")
+        select_cat = int(select_cat)
+        if select_cat >= 0 and select_cat < i:
+            return select_cat
+            break
+        else:
+            print("Commande incorrecte")
+            continue
 
 
 def books_links(url):
