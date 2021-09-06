@@ -15,7 +15,10 @@ def product_infos(url):
     category = category[2].string
     description = soup.find("article", class_="product_page").find(
             "p", recursive=False)
-    description = str(description.string)
+    try:
+        description = description.string
+    except AttributeError:
+        description = ""
     img = soup.find("div", class_="thumbnail").find("img")
     img = img['src'].replace('../../', main_url)
     product_info = soup.find("table", class_="table-striped").find_all("td")
