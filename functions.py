@@ -89,7 +89,6 @@ def select_cat():
         try:
             select = int(select)
             if select >= 0 and select < i:
-                return select
                 break
             else:
                 print("Pas de catégorie correspondante\n")
@@ -97,18 +96,25 @@ def select_cat():
         except ValueError:
             print("Commande incorrecte\n")
             continue
+    cat = cat_list[select]
+    for url in cat.values():
+        return url
 
 
-def books_links(url):
+def books_links(page_url):
     """Retrieves books urls"""
-    page = requests.get(url)
+    page = requests.get(page_url)
     soup = BeautifulSoup(page.content, "html.parser")
     links = soup.find("ol", class_="row").find_all("a")
     books, i = [], 0
     for href in links:
-        link = main_url + links[i]['href']
-        books.append(link)
-        i += 1
+        link = links[i]['href'].replace("../../", "")
+        link = main_url + "catalogue/" + link.replace("../", "")
+        if i % 2 == 0:
+            books.append(link)
+            i += 1
+        else:
+            i += 1
     return books
 
 
