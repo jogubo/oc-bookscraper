@@ -1,6 +1,7 @@
 import requests
 import time
 import csv
+import urllib.request
 from bs4 import BeautifulSoup
 
 main_url = "https://books.toscrape.com/"
@@ -41,13 +42,15 @@ def product_infos(url):
             ]
     print(product_list[0])
     writecsv(product_list)
+    img_name = product_list[0].replace(" ", "-").replace("#", "") + ".jpg"
+    urllib.request.urlretrieve(product_list[8], "/data/img/" + img_name)
     return product_list
 
 
 def writecsv(data):
-    with open('test.csv', 'a', newline='') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=' ')
-        spamwriter.writerow(data)
+    with open("/data/bookscraper.csv", 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=' ')
+        writer.writerow(data)
 
 
 def product_rating(rating):
@@ -97,7 +100,7 @@ def select_cat():
                 else:
                     print(str(i) + " - " + key)
             i += 1
-        select = input("Entrez le numéro de la catégorie "
+        select = input("\nEntrez le numéro de la catégorie "
                        "dont vous souhaitez recupérer les données : ")
         try:
             select = int(select)
