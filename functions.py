@@ -1,5 +1,6 @@
 import requests
 import time
+import csv
 from bs4 import BeautifulSoup
 
 main_url = "https://books.toscrape.com/"
@@ -34,7 +35,15 @@ def product_infos(url):
             img,
             url
             ]
+    print(product_list[0])
+    writecsv(product_list)
     return product_list
+
+
+def writecsv(data):
+    with open('test.csv', 'a', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=' ')
+        spamwriter.writerow(data)
 
 
 def product_rating(rating):
@@ -97,6 +106,9 @@ def select_cat():
             print("Commande incorrecte\n")
             continue
     cat = cat_list[select]
+    for title in cat.keys():
+        print("\n[RECUPÉRATION DES DONNÉES DE "
+              "LA CATÉGORIE '" + title.upper() + "']\n")
     for url in cat.values():
         return url
 
