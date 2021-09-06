@@ -73,8 +73,8 @@ def list_categories():
 
 def select_cat():
     """View and select category"""
+    cat_list = list_categories()
     while True:
-        cat_list = list_categories()
         i = 0
         for cat_nb in cat_list:
             cat = cat_list[i]
@@ -84,14 +84,18 @@ def select_cat():
                 else:
                     print(str(i) + " - " + key)
             i += 1
-        select_cat = input("Entrez le numéro de la catégorie "
-                           "dont vous souhaitez recupérer les données : ")
-        select_cat = int(select_cat)
-        if select_cat >= 0 and select_cat < i:
-            return select_cat
-            break
-        else:
-            print("Commande incorrecte")
+        select = input("Entrez le numéro de la catégorie "
+                       "dont vous souhaitez recupérer les données : ")
+        try:
+            select = int(select)
+            if select >= 0 and select < i:
+                return select
+                break
+            else:
+                print("Pas de catégorie correspondante\n")
+                continue
+        except ValueError:
+            print("Commande incorrecte\n")
             continue
 
 
@@ -108,7 +112,7 @@ def books_links(url):
     return books
 
 
-def pages(url, p):
+def page(url, p):
     """Increment the pages"""
     url = url.replace("index.html", "page-" + str(p) + ".html")
     request = requests.get(url)
