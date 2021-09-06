@@ -89,7 +89,6 @@ def select_cat():
         try:
             select = int(select)
             if select >= 0 and select < i:
-                return select
                 break
             else:
                 print("Pas de catégorie correspondante\n")
@@ -97,6 +96,9 @@ def select_cat():
         except ValueError:
             print("Commande incorrecte\n")
             continue
+    cat = cat_list[select]
+    for url in cat.values():
+        return url
 
 
 def books_links(url):
