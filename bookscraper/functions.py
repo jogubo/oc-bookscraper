@@ -42,13 +42,13 @@ def product_infos(url):
             ]
     print(product_list[0])
     writecsv(product_list)
-    img_name = product_list[0].replace(" ", "-").replace("#", "") + ".jpg"
-    urllib.request.urlretrieve(product_list[8], "/data/img/" + img_name)
+    img_name = product_list[6] + ".jpg"
+    urllib.request.urlretrieve(product_list[8], "data/img/" + img_name)
     return product_list
 
 
 def writecsv(data):
-    with open("/data/bookscraper.csv", 'a', newline='') as csvfile:
+    with open("data/bookscraper.csv", 'a', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ')
         writer.writerow(data)
 
