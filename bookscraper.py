@@ -1,12 +1,13 @@
 import os
 import requests
-import time
 import csv
 import urllib.request
+from time import sleep
+from datetime import date
 from bs4 import BeautifulSoup
 
 main_url = "https://books.toscrape.com/"
-
+date_today = str(date.today())
 
 def product_infos(url):
     """Scrap data from a product"""
@@ -28,6 +29,7 @@ def product_infos(url):
     price_et = product_info[2].string
     price_it = product_info[3].string
     stock = product_info[5].string
+    stock = stock.replace("In stock (", "").replace(" available)", "")
     rating = product_rating(str(soup.find("p", class_="star-rating")))
     product_list = [
             title.string,
@@ -49,7 +51,7 @@ def product_infos(url):
 
 
 def writecsv(data):
-    with open("bookscraper-data/bookscraper.csv", 'a', newline='') as csvfile:
+    with open("bookscraper-data/bookscraper_" + date_today + ".csv", 'a', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ')
         writer.writerow(data)
 
@@ -76,16 +78,13 @@ def list_categories():
     page = requests.get(main_url)
     soup = BeautifulSoup(page.content, "html.parser")
     categories = soup.find("ul", class_="nav").find("li").find_all("a")
-    cat_list, i = [], 0
+    cat_list = []
     for li in categories:
         cat = li.string.strip().replace("\n", "")
         link = main_url + li['href']
-        if i == 0:
-            cat = ["All", link]
-        else:
-            cat = [cat, link]
-        i += 1
+        cat = [cat, link]
         cat_list.append(cat)
+    cat_list[0][0] = "All"
     return cat_list
 
 
@@ -142,7 +141,7 @@ def page(url, p):
     if request.ok:
         return url
     else:
-        time.sleep(2)
+        sleep(2)
         if request.ok:
             return url
         else:

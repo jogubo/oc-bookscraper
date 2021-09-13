@@ -15,4 +15,4 @@ pip install -r requirements.txt
 python bookscraper.py
 ```
 
-Les données sont enregistrées dans un sous dossier `data` du répertoire courant.
+Les données sont enregistrées dans un sous dossier `bookscraper-data` du répertoire courant.
