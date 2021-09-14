@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 main_url = "https://books.toscrape.com/"
 date_today = str(date.today())
 
+
 def product_infos(url):
     """Scrap data from a product"""
     page = requests.get(url)
@@ -46,12 +47,14 @@ def product_infos(url):
     print(product_list[0])
     writecsv(product_list)
     img_name = product_list[6] + ".jpg"
-    urllib.request.urlretrieve(product_list[8], "bookscraper-data/img/" + img_name)
+    urllib.request.urlretrieve(product_list[8], "bookscraper-data/img/"
+                               + img_name)
     return product_list
 
 
 def writecsv(data):
-    with open("bookscraper-data/bookscraper_" + date_today + ".csv", 'a', newline='') as csvfile:
+    with open("bookscraper-data/bookscraper_" + date_today + ".csv",
+              'a', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ')
         writer.writerow(data)
 
@@ -95,7 +98,7 @@ def select_cat():
         i = 0
         for cat_nb in cat_list:
             if i < 10:
-                print(" " + str(i) + " - " +cat_nb[0])
+                print(" " + str(i) + " - " + cat_nb[0])
             else:
                 print(str(i) + " - " + cat_nb[0])
             i += 1
@@ -146,7 +149,6 @@ def page(url, p):
             return url
         else:
             return None
-
 
 
 print("\n[BOOKSCRAPER]\n")
