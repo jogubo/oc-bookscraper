@@ -12,7 +12,7 @@ Depuis la racine du projet, créer un environement virtuel et lancer le script:
 python -m venv env
 source env/bin/activate
 pip install -r requirements.txt
-python bookscraper/bookscraper.py
+python bookscraper.py
 ```
 
-Les données sont enregistrées dans un sous dossier `data` du répertoire courant.
+Les données sont enregistrées dans un sous dossier `bookscraper-data` du répertoire courant.

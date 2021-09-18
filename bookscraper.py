@@ -1,10 +1,13 @@
+import os
 import requests
-import time
 import csv
 import urllib.request
+from time import sleep
+from datetime import date
 from bs4 import BeautifulSoup
 
 main_url = "https://books.toscrape.com/"
+date_today = str(date.today())
 
 
 def product_infos(url):
@@ -27,6 +30,7 @@ def product_infos(url):
     price_et = product_info[2].string
     price_it = product_info[3].string
     stock = product_info[5].string
+    stock = stock.replace("In stock (", "").replace(" available)", "")
     rating = product_rating(str(soup.find("p", class_="star-rating")))
     product_list = [
             title.string,
@@ -43,12 +47,14 @@ def product_infos(url):
     print(product_list[0])
     writecsv(product_list)
     img_name = product_list[6] + ".jpg"
-    urllib.request.urlretrieve(product_list[8], "data/img/" + img_name)
+    urllib.request.urlretrieve(product_list[8], "bookscraper-data/img/"
+                               + img_name)
     return product_list
 
 
 def writecsv(data):
-    with open("data/bookscraper.csv", 'a', newline='') as csvfile:
+    with open("bookscraper-data/bookscraper_" + date_today + ".csv",
+              'a', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ')
         writer.writerow(data)
 
@@ -74,16 +80,14 @@ def list_categories():
     """Retrieves categories and url on the main page"""
     page = requests.get(main_url)
     soup = BeautifulSoup(page.content, "html.parser")
-    all = soup.find("ul", class_="nav").find("a")
-    all = {"All": main_url + all['href']}
     categories = soup.find("ul", class_="nav").find("li").find_all("a")
-    cat_list, i = [all], 0
+    cat_list = []
     for li in categories:
-        cat = categories[i].string.strip().replace("\n", "")
-        link = main_url + categories[i]['href']
-        cat = {cat: link}
+        cat = li.string.strip().replace("\n", "")
+        link = main_url + li['href']
+        cat = [cat, link]
         cat_list.append(cat)
-        i += 1
+    cat_list[0][0] = "All"
     return cat_list
 
 
@@ -93,12 +97,10 @@ def select_cat():
     while True:
         i = 0
         for cat_nb in cat_list:
-            cat = cat_list[i]
-            for key in cat.keys():
-                if i < 10:
-                    print(" " + str(i) + " - " + key)
-                else:
-                    print(str(i) + " - " + key)
+            if i < 10:
+                print(" " + str(i) + " - " + cat_nb[0])
+            else:
+                print(str(i) + " - " + cat_nb[0])
             i += 1
         select = input("\nEntrez le numéro de la catégorie "
                        "dont vous souhaitez recupérer les données : ")
@@ -113,11 +115,9 @@ def select_cat():
             print("Commande incorrecte\n")
             continue
     cat = cat_list[select]
-    for title in cat.keys():
-        print("\n[RECUPÉRATION DES DONNÉES DE "
-              "LA CATÉGORIE '" + title.upper() + "']\n")
-    for url in cat.values():
-        return url
+    print("\n[RECUPÉRATION DES DONNÉES DE "
+          "LA CATÉGORIE '" + cat[0].upper() + "']\n")
+    return cat[1]
 
 
 def books_links(page_url):
@@ -144,8 +144,32 @@ def page(url, p):
     if request.ok:
         return url
     else:
-        time.sleep(2)
+        sleep(2)
         if request.ok:
             return url
         else:
             return None
+
+
+print("\n[BOOKSCRAPER]\n")
+category_url = select_cat()
+page_url = category_url
+page_nb = 1
+count = 0
+if os.path.exists('bookscraper-data'):
+    if os.path.exists('bookscraper-data/img'):
+        pass
+    else:
+        os.mkdir('bookscraper-data/img')
+else:
+    os.mkdir('bookscraper-data')
+    os.mkdir('bookscraper-data/img')
+while page_url is not None:
+    books = books_links(page_url)
+    for book in books:
+        product_infos(book)
+        count += 1
+    page_url = page(category_url, page_nb)
+    page_nb += 1
+print("\n[TERMINÉ, " + str(count) + " LIVRES "
+      "IMPORTÉS AVEC SUCCÈS]\n")
