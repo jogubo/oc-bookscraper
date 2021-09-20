@@ -9,10 +9,10 @@ Ce script permet de récupérer les données du site [Books to Scrape](https://b
 Depuis la racine du projet, créer un environement virtuel et lancer le script:
 
 ```
-python -m venv env
-source env/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python bookscraper.py
 ```
 
-Les données sont enregistrées dans un sous dossier `bookscraper-data` du répertoire courant.
+Les données sont enregistrées dans le sous dossier `bookscraper-data` du répertoire courant.

@@ -1,18 +1,16 @@
 import os
-import requests
 import csv
-import urllib.request
+from requests import get
+from urllib.request import urlretrieve
 from time import sleep
-from datetime import date
 from bs4 import BeautifulSoup
 
-main_url = "https://books.toscrape.com/"
-date_today = str(date.today())
+main_url = "http://books.toscrape.com/"
 
 
 def product_infos(url):
     """Scrap data from a product"""
-    page = requests.get(url)
+    page = get(url)
     soup = BeautifulSoup(page.content, "html.parser")
     title = soup.find("div", class_="product_main").find("h1")
     category = soup.find("ul", class_="breadcrumb").find_all("a")
@@ -47,15 +45,14 @@ def product_infos(url):
     print(product_list[0])
     writecsv(product_list)
     img_name = product_list[6] + ".jpg"
-    urllib.request.urlretrieve(product_list[8], "bookscraper-data/img/"
-                               + img_name)
+    urlretrieve(product_list[8], "bookscraper-data/img/" + img_name)
     return product_list
 
 
 def writecsv(data):
-    with open("bookscraper-data/bookscraper_" + date_today + ".csv",
-              'a', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=' ')
+    with open("bookscraper-data/" + data[1].replace(" ", "_").lower()
+              + ".csv", 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
         writer.writerow(data)
 
 
@@ -78,7 +75,7 @@ def product_rating(rating):
 
 def list_categories():
     """Retrieves categories and url on the main page"""
-    page = requests.get(main_url)
+    page = get(main_url)
     soup = BeautifulSoup(page.content, "html.parser")
     categories = soup.find("ul", class_="nav").find("li").find_all("a")
     cat_list = []
@@ -122,7 +119,7 @@ def select_cat():
 
 def books_links(page_url):
     """Retrieves books urls"""
-    page = requests.get(page_url)
+    page = get(page_url)
     soup = BeautifulSoup(page.content, "html.parser")
     links = soup.find("ol", class_="row").find_all("a")
     books, i = [], 0
@@ -140,7 +137,7 @@ def books_links(page_url):
 def page(url, p):
     """Increment the pages"""
     url = url.replace("index.html", "page-" + str(p) + ".html")
-    request = requests.get(url)
+    request = get(url)
     if request.ok:
         return url
     else:
